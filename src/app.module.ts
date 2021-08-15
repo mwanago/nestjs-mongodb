@@ -11,7 +11,7 @@ import * as Joi from '@hapi/joi';
         MONGO_USERNAME: Joi.string().required(),
         MONGO_PASSWORD: Joi.string().required(),
         MONGO_DATABASE: Joi.string().required(),
-        MONGO_PATH: Joi.string().required(),
+        MONGO_HOST: Joi.string().required(),
       }),
     }),
     MongooseModule.forRootAsync({
