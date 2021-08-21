@@ -4,32 +4,37 @@ import { InjectModel } from '@nestjs/mongoose';
 import { Post, PostDocument } from './post.schema';
 import { NotFoundException } from '@nestjs/common';
 import PostDto from './dto/post.dto';
+import { User } from '../users/user.schema';
 
 @Injectable()
 class PostsService {
   constructor(@InjectModel(Post.name) private postModel: Model<PostDocument>) {}
 
   async findAll() {
-    return this.postModel.find();
+    return this.postModel.find().populate('author');
   }
 
   async findOne(id: string) {
-    const post = await this.postModel.findById(id);
+    const post = await this.postModel.findById(id).populate('author');
     if (!post) {
       throw new NotFoundException();
     }
     return post;
   }
 
-  create(postData: PostDto) {
-    const createdPost = new this.postModel(postData);
+  create(postData: PostDto, author: User) {
+    const createdPost = new this.postModel({
+      ...postData,
+      author,
+    });
     return createdPost.save();
   }
 
   async update(id: string, postData: PostDto) {
     const post = await this.postModel
       .findByIdAndUpdate(id, postData)
-      .setOptions({ overwrite: true, new: true });
+      .setOptions({ overwrite: true, new: true })
+      .populate('author');
     if (!post) {
       throw new NotFoundException();
     }

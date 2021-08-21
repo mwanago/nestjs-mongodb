@@ -6,12 +6,20 @@ import {
   Param,
   Post,
   Put,
+  Req,
+  UseGuards,
+  UseInterceptors,
 } from '@nestjs/common';
 import PostsService from './posts.service';
 import ParamsWithId from '../utils/paramsWithId';
 import PostDto from './dto/post.dto';
+import JwtAuthenticationGuard from '../authentication/jwt-authentication.guard';
+import RequestWithUser from '../authentication/requestWithUser.interface';
+import MongooseClassSerializerInterceptor from '../utils/mongooseClassSerializer.interceptor';
+import { Post as PostModel } from './post.schema';
 
 @Controller('posts')
+@UseInterceptors(MongooseClassSerializerInterceptor(PostModel))
 export default class PostsController {
   constructor(private readonly postsService: PostsService) {}
 
@@ -26,8 +34,9 @@ export default class PostsController {
   }
 
   @Post()
-  async createPost(@Body() post: PostDto) {
-    return this.postsService.create(post);
+  @UseGuards(JwtAuthenticationGuard)
+  async createPost(@Body() post: PostDto, @Req() req: RequestWithUser) {
+    return this.postsService.create(post, req.user);
   }
 
   @Delete(':id')
