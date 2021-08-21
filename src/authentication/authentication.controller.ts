@@ -17,10 +17,10 @@ import { User } from '../users/user.schema';
 import MongooseClassSerializerInterceptor from '../utils/MongooseClassSerializerInterceptor';
 
 @Controller('authentication')
+@UseInterceptors(MongooseClassSerializerInterceptor(User))
 export class AuthenticationController {
   constructor(private readonly authenticationService: AuthenticationService) {}
 
-  @UseInterceptors(MongooseClassSerializerInterceptor(User))
   @Post('register')
   async register(@Body() registrationData: RegisterDto) {
     return this.authenticationService.register(registrationData);

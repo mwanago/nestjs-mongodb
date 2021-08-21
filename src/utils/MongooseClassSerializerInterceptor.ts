@@ -10,29 +10,30 @@ function MongooseClassSerializerInterceptor(
   classToIntercept: Type,
 ): typeof ClassSerializerInterceptor {
   return class Interceptor extends ClassSerializerInterceptor {
+    private changePlainObjectToClass(document: PlainLiteralObject) {
+      if (!(document instanceof Document)) {
+        return document;
+      }
+
+      const simplifiedObject: Document = plainToClass(
+        classToIntercept,
+        document.toObject(),
+      );
+
+      return {
+        ...simplifiedObject,
+        _id: simplifiedObject._id.toString(),
+      };
+    }
+
     private prepareResponse(
       response: PlainLiteralObject | PlainLiteralObject[],
     ) {
-      if (!(response instanceof Document)) {
-        return response;
+      if (Array.isArray(response)) {
+        return response.map(this.changePlainObjectToClass);
       }
 
-      const simplifiedResponse: Document = plainToClass(
-        classToIntercept,
-        response.toObject(),
-      );
-
-      if (Array.isArray(simplifiedResponse)) {
-        return simplifiedResponse.map((element) => ({
-          ...element,
-          _id: element._id.toString(),
-        }));
-      }
-
-      return {
-        ...simplifiedResponse,
-        _id: simplifiedResponse._id.toString(),
-      };
+      return this.changePlainObjectToClass(response);
     }
 
     serialize(
