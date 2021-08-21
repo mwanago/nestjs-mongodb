@@ -3,6 +3,7 @@ import { Document, ObjectId } from 'mongoose';
 import * as mongoose from 'mongoose';
 import { User } from '../users/user.schema';
 import { Transform, Type } from 'class-transformer';
+import { Category } from '../categories/category.schema';
 
 export type PostDocument = Post & Document;
 
@@ -20,6 +21,12 @@ export class Post {
   @Prop({ type: mongoose.Schema.Types.ObjectId, ref: User.name })
   @Type(() => User)
   author: User;
+
+  @Prop({
+    type: [{ type: mongoose.Schema.Types.ObjectId, ref: Category.name }],
+  })
+  @Type(() => Category)
+  categories: Category;
 }
 
 export const PostSchema = SchemaFactory.createForClass(Post);

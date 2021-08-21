@@ -11,22 +11,26 @@ class PostsService {
   constructor(@InjectModel(Post.name) private postModel: Model<PostDocument>) {}
 
   async findAll() {
-    return this.postModel.find().populate('author');
+    return this.postModel.find().populate('author').populate('categories');
   }
 
   async findOne(id: string) {
-    const post = await this.postModel.findById(id).populate('author');
+    const post = await this.postModel
+      .findById(id)
+      .populate('author')
+      .populate('categories');
     if (!post) {
       throw new NotFoundException();
     }
     return post;
   }
 
-  create(postData: PostDto, author: User) {
+  async create(postData: PostDto, author: User) {
     const createdPost = new this.postModel({
       ...postData,
       author,
     });
+    await createdPost.populate('categories').execPopulate();
     return createdPost.save();
   }
 
@@ -34,7 +38,8 @@ class PostsService {
     const post = await this.postModel
       .findByIdAndUpdate(id, postData)
       .setOptions({ overwrite: true, new: true })
-      .populate('author');
+      .populate('author')
+      .populate('categories');
     if (!post) {
       throw new NotFoundException();
     }
