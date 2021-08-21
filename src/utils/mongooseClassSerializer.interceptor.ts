@@ -15,15 +15,7 @@ function MongooseClassSerializerInterceptor(
         return document;
       }
 
-      const simplifiedObject: Document = plainToClass(
-        classToIntercept,
-        document.toObject(),
-      );
-
-      return {
-        ...simplifiedObject,
-        _id: simplifiedObject._id.toString(),
-      };
+      return plainToClass(classToIntercept, document.toObject());
     }
 
     private prepareResponse(
