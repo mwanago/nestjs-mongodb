@@ -5,7 +5,11 @@ import { Address, AddressSchema } from './address.schema';
 
 export type UserDocument = User & Document;
 
-@Schema()
+@Schema({
+  toJSON: {
+    getters: true,
+  },
+})
 export class User {
   @Transform(({ value }) => value.toString())
   _id: ObjectId;
@@ -23,6 +27,16 @@ export class User {
   @Prop({ type: AddressSchema })
   @Type(() => Address)
   address: Address;
+
+  @Prop({
+    get: (creditCardNumber: string) => {
+      const lastFourDigits = creditCardNumber.slice(
+        creditCardNumber.length - 4,
+      );
+      return `****-****-****-${lastFourDigits}`;
+    },
+  })
+  creditCardNumber: string;
 }
 
 export const UserSchema = SchemaFactory.createForClass(User);

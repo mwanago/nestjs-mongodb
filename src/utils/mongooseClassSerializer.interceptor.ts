@@ -15,7 +15,7 @@ function MongooseClassSerializerInterceptor(
         return document;
       }
 
-      return plainToClass(classToIntercept, document.toObject());
+      return plainToClass(classToIntercept, document.toJSON());
     }
 
     private prepareResponse(
