@@ -8,6 +8,7 @@ export type UserDocument = User & Document;
 @Schema({
   toJSON: {
     getters: true,
+    virtuals: true,
   },
 })
 export class User {
@@ -18,7 +19,12 @@ export class User {
   email: string;
 
   @Prop()
-  name: string;
+  firstName: string;
+
+  @Prop()
+  lastName: string;
+
+  fullName: string;
 
   @Prop()
   @Exclude()
@@ -30,13 +36,22 @@ export class User {
 
   @Prop({
     get: (creditCardNumber: string) => {
+      if (!creditCardNumber) {
+        return;
+      }
       const lastFourDigits = creditCardNumber.slice(
         creditCardNumber.length - 4,
       );
       return `****-****-****-${lastFourDigits}`;
     },
   })
-  creditCardNumber: string;
+  creditCardNumber?: string;
 }
 
-export const UserSchema = SchemaFactory.createForClass(User);
+const UserSchema = SchemaFactory.createForClass(User);
+
+UserSchema.virtual('fullName').get(function (this: User) {
+  return `${this.firstName} ${this.lastName}`;
+});
+
+export { UserSchema };
