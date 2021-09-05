@@ -5,6 +5,7 @@ import { Post, PostDocument } from './post.schema';
 import { NotFoundException } from '@nestjs/common';
 import PostDto from './dto/post.dto';
 import { User } from '../users/user.schema';
+import * as mongoose from 'mongoose';
 
 @Injectable()
 class PostsService {
@@ -51,6 +52,13 @@ class PostsService {
     if (!result) {
       throw new NotFoundException();
     }
+  }
+
+  async deleteMany(
+    ids: string[],
+    session: mongoose.ClientSession | null = null,
+  ) {
+    return this.postModel.deleteMany({ _id: ids }).session(session);
   }
 }
 
