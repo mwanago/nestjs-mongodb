@@ -20,7 +20,15 @@ function MongooseClassSerializerInterceptor(
 
     private prepareResponse(
       response: PlainLiteralObject | PlainLiteralObject[],
-    ) {
+    ): PlainLiteralObject {
+      if (!Array.isArray(response) && response.results) {
+        const results = this.prepareResponse(response.results);
+        return {
+          ...response,
+          results,
+        };
+      }
+
       if (Array.isArray(response)) {
         return response.map(this.changePlainObjectToClass);
       }

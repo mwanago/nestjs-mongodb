@@ -6,6 +6,7 @@ import {
   Param,
   Post,
   Put,
+  Query,
   Req,
   UseGuards,
   UseInterceptors,
@@ -17,6 +18,7 @@ import JwtAuthenticationGuard from '../authentication/jwt-authentication.guard';
 import RequestWithUser from '../authentication/requestWithUser.interface';
 import MongooseClassSerializerInterceptor from '../utils/mongooseClassSerializer.interceptor';
 import { Post as PostModel } from './post.schema';
+import { PaginationParams } from '../utils/paginationParams';
 
 @Controller('posts')
 @UseInterceptors(MongooseClassSerializerInterceptor(PostModel))
@@ -24,8 +26,8 @@ export default class PostsController {
   constructor(private readonly postsService: PostsService) {}
 
   @Get()
-  async getAllPosts() {
-    return this.postsService.findAll();
+  async getAllPosts(@Query() { skip, limit }: PaginationParams) {
+    return this.postsService.findAll(skip, limit);
   }
 
   @Get(':id')
