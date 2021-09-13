@@ -1,7 +1,11 @@
-import { IsNumber, Min, IsOptional } from 'class-validator';
+import { IsNumber, IsMongoId, Min, IsOptional } from 'class-validator';
 import { Type } from 'class-transformer';
 
 export class PaginationParams {
+  @IsOptional()
+  @IsMongoId()
+  startId?: string;
+
   @IsOptional()
   @Type(() => Number)
   @IsNumber()

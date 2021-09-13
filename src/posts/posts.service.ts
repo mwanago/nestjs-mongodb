@@ -11,9 +11,21 @@ import * as mongoose from 'mongoose';
 class PostsService {
   constructor(@InjectModel(Post.name) private postModel: Model<PostDocument>) {}
 
-  async findAll(documentsToSkip = 0, limitOfDocuments?: number) {
+  async findAll(
+    documentsToSkip = 0,
+    limitOfDocuments?: number,
+    startId?: string,
+  ) {
+    const filters = startId
+      ? {
+          _id: {
+            $gt: startId,
+          },
+        }
+      : {};
+
     const findQuery = this.postModel
-      .find()
+      .find(filters)
       .sort({ _id: 1 })
       .skip(documentsToSkip)
       .populate('author')
@@ -22,6 +34,7 @@ class PostsService {
     if (limitOfDocuments) {
       findQuery.limit(limitOfDocuments);
     }
+
     const results = await findQuery;
     const count = await this.postModel.count();
 
