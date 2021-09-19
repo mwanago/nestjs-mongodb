@@ -1,4 +1,4 @@
-import { Model } from 'mongoose';
+import { FilterQuery, Model } from 'mongoose';
 import { Injectable } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
 import { Post, PostDocument } from './post.schema';
@@ -15,14 +15,21 @@ class PostsService {
     documentsToSkip = 0,
     limitOfDocuments?: number,
     startId?: string,
+    searchQuery?: string,
   ) {
-    const filters = startId
+    const filters: FilterQuery<PostDocument> = startId
       ? {
           _id: {
             $gt: startId,
           },
         }
       : {};
+
+    if (searchQuery) {
+      filters.$text = {
+        $search: searchQuery,
+      };
+    }
 
     const findQuery = this.postModel
       .find(filters)

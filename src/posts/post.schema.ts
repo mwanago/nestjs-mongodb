@@ -33,4 +33,8 @@ export class Post {
   categories: Category;
 }
 
-export const PostSchema = SchemaFactory.createForClass(Post);
+const PostSchema = SchemaFactory.createForClass(Post);
+
+PostSchema.index({ title: 'text', content: 'text' });
+
+export { PostSchema };
