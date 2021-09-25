@@ -36,7 +36,8 @@ class PostsService {
       .sort({ _id: 1 })
       .skip(documentsToSkip)
       .populate('author')
-      .populate('categories');
+      .populate('categories')
+      .populate('series');
 
     if (limitOfDocuments) {
       findQuery.limit(limitOfDocuments);
@@ -52,7 +53,8 @@ class PostsService {
     const post = await this.postModel
       .findById(id)
       .populate('author')
-      .populate('categories');
+      .populate('categories')
+      .populate('series');
     if (!post) {
       throw new NotFoundException();
     }
@@ -64,7 +66,7 @@ class PostsService {
       ...postData,
       author,
     });
-    await createdPost.populate('categories').execPopulate();
+    await createdPost.populate('categories').populate('series').execPopulate();
     return createdPost.save();
   }
 
@@ -73,7 +75,8 @@ class PostsService {
       .findByIdAndUpdate(id, postData)
       .setOptions({ overwrite: true, new: true })
       .populate('author')
-      .populate('categories');
+      .populate('categories')
+      .populate('series');
     if (!post) {
       throw new NotFoundException();
     }
