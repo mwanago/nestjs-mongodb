@@ -54,6 +54,8 @@ export class User {
 
 const UserSchema = SchemaFactory.createForClass(User);
 
+UserSchema.index({ firstName: 'text', lastName: 'text' });
+
 UserSchema.virtual('fullName').get(function (this: User) {
   return `${this.firstName} ${this.lastName}`;
 });
