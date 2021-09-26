@@ -1,12 +1,12 @@
-import { IsString, IsNotEmpty, IsMongoId, IsOptional } from 'class-validator';
+import { IsString, IsNotEmpty, IsOptional } from 'class-validator';
 import { User } from '../../users/user.schema';
-import { Type } from 'class-transformer';
+import { Exclude, Type } from 'class-transformer';
 import { Category } from '../../categories/category.schema';
 import { Series } from '../../series/series.schema';
 
 export class UpdatePostDto {
-  @IsMongoId()
-  @IsNotEmpty()
+  @IsOptional()
+  @Exclude()
   _id: string;
 
   @IsString()
