@@ -31,14 +31,14 @@ export class Post {
     type: [{ type: mongoose.Schema.Types.ObjectId, ref: Category.name }],
   })
   @Type(() => Category)
-  categories: Category;
+  categories: Category[];
 
   @Prop({
     type: mongoose.Schema.Types.ObjectId,
     ref: Series.name,
   })
   @Type(() => Series)
-  series: Series;
+  series?: Series;
 }
 
 const PostSchema = SchemaFactory.createForClass(Post);

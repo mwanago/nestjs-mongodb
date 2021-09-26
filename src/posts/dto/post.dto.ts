@@ -8,6 +8,8 @@ export class PostDto {
   @IsString()
   @IsNotEmpty()
   content: string;
+
+  categories: string[];
 }
 
 export default PostDto;

@@ -6,6 +6,7 @@ import { NotFoundException } from '@nestjs/common';
 import PostDto from './dto/post.dto';
 import { User } from '../users/user.schema';
 import * as mongoose from 'mongoose';
+import UpdatePostDto from './dto/updatePost.dto';
 
 @Injectable()
 class PostsService {
@@ -70,10 +71,9 @@ class PostsService {
     return createdPost.save();
   }
 
-  async update(id: string, postData: PostDto) {
+  async update(id: string, postData: UpdatePostDto) {
     const post = await this.postModel
-      .findByIdAndUpdate(id, postData)
-      .setOptions({ overwrite: true, new: true })
+      .findOneAndReplace({ _id: id }, postData, { new: true })
       .populate('author')
       .populate('categories')
       .populate('series');

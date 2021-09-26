@@ -19,6 +19,7 @@ import RequestWithUser from '../authentication/requestWithUser.interface';
 import MongooseClassSerializerInterceptor from '../utils/mongooseClassSerializer.interceptor';
 import { Post as PostModel } from './post.schema';
 import { PaginationParams } from '../utils/paginationParams';
+import UpdatePostDto from './dto/updatePost.dto';
 
 @Controller('posts')
 @UseInterceptors(MongooseClassSerializerInterceptor(PostModel))
@@ -50,7 +51,7 @@ export default class PostsController {
   }
 
   @Put(':id')
-  async updatePost(@Param() { id }: ParamsWithId, @Body() post: PostDto) {
+  async updatePost(@Param() { id }: ParamsWithId, @Body() post: UpdatePostDto) {
     return this.postsService.update(id, post);
   }
 }
